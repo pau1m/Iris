@@ -36,6 +36,7 @@
   "license": "GPL-2.0",
   "devDependencies": {
     "frisby": "^0.8.5",
-    "jasmine-node": "^1.14.5"
+    "jasmine-node": "^1.14.5",
+    "jshint": "^2.9.1"
   }
 }
