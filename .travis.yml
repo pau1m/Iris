@@ -1,4 +1,6 @@
 language: node_js
 node_js:
   - "5.5"
-script: script: node iris.js site=default
+before_install:
+  - sudo apt-get install -y mongodb-org
+
