@@ -12,3 +12,7 @@ before_script:
 services:
   - mongodb
 env: site=default
+addons:
+  hosts:
+    - www.iris.local
+
