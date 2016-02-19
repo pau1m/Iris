@@ -3,5 +3,8 @@ node_js:
   - "5.5"
 before_install:
   - sudo apt-get install -y mongodb-org
+before_script:
+  - npm install grunt-cli -g
+  - npm install jasmine-node -g
 services:
   - mongodb
