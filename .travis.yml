@@ -7,9 +7,8 @@ before_script:
   - npm install grunt-cli -g
   - npm install jasmine-node -g
   - npm install
-#  - node iris.js site=default
   - mongo mydb_test --eval 'db.addUser("travis", "test");'
-  - service mongod status
+  - node iris.js site=default &
 services:
   - mongodb
 env: site=default
