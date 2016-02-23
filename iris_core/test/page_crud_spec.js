@@ -32,18 +32,12 @@ var pageContent = {
   path: 'test/' + generateString(5)
 };
 
-
-frisby.create('Request auth key')
+//function setupAdminUser
+frisby.create('Set first time user')
   .post(baseURL + '/api/user/first',
-    user.login,
-  { json: true })
-  .expectStatus(200)
-  .expectHeaderContains('content-type', 'application/json')
-  .expectJSONTypes({
-    userid: String,
-    token: String
-  })
-  .afterJSON(function (res) {
+   user.login,
+   { json: true })
+  .after(function (res) {
      frisby.create('Request auth key')
         .post(baseURL + '/api/login',
           user.login,
@@ -57,64 +51,115 @@ frisby.create('Request auth key')
         .afterJSON(function (res) {
           user.auth.token = res.token;
 
+
+          frisby.create('Create a page')
+            .post(baseURL + '/entity/create/page',
+              {
+                credentials: user.auth,
+                title: pageContent.title,
+                body: pageContent.body,
+                path: pageContent.path
+              },
+              { json: true })
+              .expectStatus(200)
+              .expectHeaderContains('content-type', 'application/json')
+              .inspectJSON()
+              .afterJSON(function (res) {
+
+                pageQuery.queries[0].value = pageContent.eid = res.eid;
+
+                frisby.create('Fetch a page')
+                  .get(baseURL + '/fetch' + prepareQuery())
+                  .inspectJSON()
+                  .expectStatus(200)
+                  .expectHeaderContains('content-type', 'application/json')
+                  .afterJSON(function (res) {
+
+                    frisby.create('Edit a page')
+                      .post(baseURL + '/entity/edit/page/' + pageContent.eid,
+                        {
+                          credentials: user.auth,
+                          body: pageContent.body + 'edited'
+                        },
+                        { json: true })
+                      .inspectJSON()
+                      .expectStatus(200)
+                      .expectHeaderContains('content-type', 'application/json')
+                      .afterJSON(function (res) {
+
+                        frisby.create('Delete a page')
+                          .post(baseURL + '/entity/delete/page/' + pageContent.eid,
+                          {
+                            credentials: user.auth,
+                          },
+                          { json: true })
+                          .expectStatus(200)
+                          .expectHeaderContains('content-type', 'application/json')
+                          .inspectJSON()
+                          .toss();
+                      })
+                    .toss()
+                  })
+                 .toss()
+              })
+             .toss();
         })
         .inspectJSON()
         .toss();
-
   })
-  .inspectJSON()
   .toss();
 
 
 
-frisby.create('Create a page')
-  .post(baseURL + '/entity/create/page',
-    {
-      credentials: user.auth,
-      title: pageContent.title,
-      body: pageContent.body,
-      path: pageContent.path
-    },
-    { json: true })
-    .expectStatus(200)
-    .expectHeaderContains('content-type', 'application/json')
-    .inspectJSON()
-    .afterJSON(function (res) {
 
-      pageQuery.queries[0].value = pageContent.eid = res.eid;
+// frisby.create('Create a page')
+//   .post(baseURL + '/entity/create/page',
+//     {
+//       credentials: user.auth,
+//       title: pageContent.title,
+//       body: pageContent.body,
+//       path: pageContent.path
+//     },
+//     { json: true })
+//     .expectStatus(200)
+//     .expectHeaderContains('content-type', 'application/json')
+//     .inspectJSON()
+//     .afterJSON(function (res) {
 
-      frisby.create('Fetch a page')
-        .get(baseURL + '/fetch' + prepareQuery())
-        .inspectJSON()
-        .expectStatus(200)
-        .expectHeaderContains('content-type', 'application/json')
-        .afterJSON(function (res) {
+//       pageQuery.queries[0].value = pageContent.eid = res.eid;
 
-          frisby.create('Edit a page')
-            .post(baseURL + '/entity/edit/page/' + pageContent.eid,
-              {
-                credentials: user.auth,
-                body: pageContent.body + 'edited'
-              },
-              { json: true })
-            .inspectJSON()
-            .expectStatus(200)
-            .expectHeaderContains('content-type', 'application/json')
-            .afterJSON(function (res) {
+//       frisby.create('Fetch a page')
+//         .get(baseURL + '/fetch' + prepareQuery())
+//         .inspectJSON()
+//         .expectStatus(200)
+//         .expectHeaderContains('content-type', 'application/json')
+//         .afterJSON(function (res) {
 
-              frisby.create('Delete a page')
-                .post(baseURL + '/entity/delete/page/' + pageContent.eid,
-                {
-                  credentials: user.auth,
-                },
-                { json: true })
-                .expectStatus(200)
-                .expectHeaderContains('content-type', 'application/json')
-                .inspectJSON()
-                .toss();
-            })
-          .toss()
-        })
-       .toss()
-    })
-   .toss();
+//           frisby.create('Edit a page')
+//             .post(baseURL + '/entity/edit/page/' + pageContent.eid,
+//               {
+//                 credentials: user.auth,
+//                 body: pageContent.body + 'edited'
+//               },
+//               { json: true })
+//             .inspectJSON()
+//             .expectStatus(200)
+//             .expectHeaderContains('content-type', 'application/json')
+//             .afterJSON(function (res) {
+
+//               frisby.create('Delete a page')
+//                 .post(baseURL + '/entity/delete/page/' + pageContent.eid,
+//                 {
+//                   credentials: user.auth,
+//                 },
+//                 { json: true })
+//                 .expectStatus(200)
+//                 .expectHeaderContains('content-type', 'application/json')
+//                 .inspectJSON()
+//                 .toss();
+//             })
+//           .toss()
+//         })
+//        .toss()
+//     })
+//    .toss();
