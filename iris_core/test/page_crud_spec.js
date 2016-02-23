@@ -33,7 +33,7 @@ var pageContent = {
 };
 
 frisby.create('Request auth key')
-  .post(baseURL + '/api/login',
+  .post(baseURL + '/api/user/first',
     user.login,
   { json: true })
   .expectStatus(200)
