@@ -32,8 +32,9 @@ var pageContent = {
   path: 'test/' + generateString(5)
 };
 
+
 frisby.create('Request auth key')
-  .post(baseURL + '/api/user/first',
+  .post(baseURL + '/api/login',
     user.login,
   { json: true })
   .expectStatus(200)
@@ -43,11 +44,28 @@ frisby.create('Request auth key')
     token: String
   })
   .afterJSON(function (res) {
-    user.auth.token = res.token;
+     frisby.create('Request auth key')
+        .post(baseURL + '/api/login',
+          user.login,
+        { json: true })
+        .expectStatus(200)
+        .expectHeaderContains('content-type', 'application/json')
+        .expectJSONTypes({
+          userid: String,
+          token: String
+        })
+        .afterJSON(function (res) {
+          user.auth.token = res.token;
+
+        })
+        .inspectJSON()
+        .toss();
 
   })
   .inspectJSON()
   .toss();
+
+
 
 frisby.create('Create a page')
   .post(baseURL + '/entity/create/page',
