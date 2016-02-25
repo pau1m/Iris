@@ -60,8 +60,6 @@ frisby.create('Set first time user')
                 password: String,
                 entityType: String
             })
-            .inspectJSON()
-            .inspectBody()
             .afterJSON(function (res) {
                   testUser.auth.userid = res.eid;
                   frisby.create('Update user roles with admin')
@@ -78,7 +76,6 @@ frisby.create('Set first time user')
               })
               .toss()
     })
-    .inspectJSON()
     .toss()
 })
 .toss();
