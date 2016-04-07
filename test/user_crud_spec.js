@@ -26,6 +26,7 @@ frisby.create('Set first time user')
   .post(baseURL + '/api/user/first',
    adminUser.login,
    { json: true })
+  .inspectJSON()
   .after(function (res) {
   frisby.create('Request auth key')
     .post(baseURL + '/api/login',
