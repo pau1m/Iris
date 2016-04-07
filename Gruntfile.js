@@ -9,7 +9,7 @@ module.exports = function (grunt) {
                     forceExit: false,
                     match: '.',
                     matchAll: false,
-                    specFolders: ['iris_core/test'],
+                    specFolders: ['test'],
                     extensions: 'js',
                     specNameMatcher: 'spec',
                     captureExceptions: true,
